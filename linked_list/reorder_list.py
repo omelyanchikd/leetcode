@@ -21,27 +21,40 @@ def create_linked_list(elements):
         linked_list = append(linked_list, element)
     return linked_list
 
+def find_middle_point(head):
+    slow = head
+    fast = head.next
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    return slow
+
+def reverse_linked_list(head):
+    current_node = head.next
+    previous_node = None
+    head.next = None
+    while current_node:
+        next_node = current_node.next
+        current_node.next = previous_node
+        previous_node = current_node
+        current_node = next_node
+    return previous_node
+
 def reorderList(head):
     """
     :type head: ListNode
     :rtype: None Do not return anything, modify head in-place instead.
     """
-    values = []
-    cursor = head
-    while cursor.next:
-        values.append(cursor.val)
-        cursor = cursor.next
-    values.append(cursor.val)
-    start = 1
-    end = len(values) - 1
-    last = head
-    while start < end:
-        last.next = ListNode(values[end], ListNode(values[start]))
-        start += 1
-        end -= 1
-        last = last.next.next
-    if start == end:
-        last.next = ListNode(values[start])
+    middle = find_middle_point(head)
+    second_half = reverse_linked_list(middle)
+    first_half = head
+    while first_half and second_half:
+        first = first_half.next
+        second = second_half.next
+        first_half.next = second_half
+        second_half.next = first
+        first_half, second_half = first, second
+
 
 if __name__ == '__main__':
     head = create_linked_list([1, 2, 3, 4, 5])
